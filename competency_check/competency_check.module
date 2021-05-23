@@ -1,0 +1,33 @@
+<?php
+
+/* Hook to alter the site information settings */
+function cme_custom_form_system_site_information_settings_alter(&$form, $form_state, $form_id)
+{ 
+  /* Add a new field - Site API Key to Site Information configuration */
+   $config = \Drupal::configFactory()->getEditable('siteapikey.configuration');
+   $get_site_api_key = $config->get('siteapikey');
+   $form['site_information']['siteapikey'] = [
+      '#type' => 'textfield',
+      '#title' => t('Site API Key'),
+      '#default_value' => $get_site_api_key?: 'No API Key yet',
+      '#description' => t("Field to set API Key"),
+    ];
+
+    /* Change 'Save Configuration' text to 'Update Configuration' */
+    $form['actions']['submit']['#value'] = t('Update configuration');
+
+    /* Form submission handler to set the value of siteapikey and also display success message*/
+    $form['#submit'][] = 'siteapikey_submit_handler';
+}
+
+function siteapikey_submit_handler($form, &$form_state)
+{
+    $config = \Drupal::configFactory()->getEditable('siteapikey.configuration');
+    $get_siteapikey = $form_state->getValue(['siteapikey']);
+    $config->set('siteapikey', $get_siteapikey);
+    $config->save();
+ 
+    /* Display success message on save of value */
+    $message = "Site API key is saved with the value" . $get_siteapikey;
+    \Drupal::messenger()->addMessage($message);
+}

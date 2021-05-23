@@ -1,0 +1,7 @@
+load.node_json_data:
+  path: '/page_json/{site_api_key}/{nid}'
+  defaults:
+    _controller: '\Drupal\competency_check\Controller\NodeJsonData::load_node_jsondata'
+    _title: 'Load json representation of the node'
+  requirements:
+    _permission: 'access content'
